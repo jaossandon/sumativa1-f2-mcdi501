@@ -1,9 +1,14 @@
 # Duración de la titulación en el pregrado universitario chileno (2025)
 
-Sumativa 1, Fase 2 · MCDI501 Estadística Computacional para la Toma de Decisiones
-Docente: Jean Paul Maidana González
+**Curso:** MCDI501 Estadística Computacional para la Toma de Decisiones  
+**Evaluación:** Sumativa 1, Fase 2  
+**Docente:** Jean Paul Maidana González
 
-**Integrantes:** Fernanda Ovalle Román · Sebastián Cajales Cid · César Lorca Bacián · Jorge Álvarez Ossandón
+## Integrantes
+- Fernanda Ovalle Román
+- Sebastián Cajales Cid
+- César Lorca Bacián
+- Jorge Álvarez Ossandón
 
 ## Pregunta
 ¿Cuánto se aparta la duración real de las carreras de su duración formal, y difiere ese atraso según sexo y jornada?
@@ -16,7 +21,7 @@ El archivo crudo no se incluye por su tamaño: descargarlo desde https://datosab
 ```
 data/raw/            archivo crudo (no versionado)
 notebooks/           Sumativa1_F2_Titulados.ipynb (análisis completo)
-informe/             informe PDF y main.tex
+informe/             Informe_Sumativa1_F2.pdf (informe final)
 informe/figuras/     figuras generadas por el notebook
 requirements.txt     librerías y versiones
 ```
