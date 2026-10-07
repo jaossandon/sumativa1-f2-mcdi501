@@ -218,3 +218,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+# Datos: el crudo pesa mas de 100 MB y se descarga desde Mineduc
+data/raw/
+*.csv
