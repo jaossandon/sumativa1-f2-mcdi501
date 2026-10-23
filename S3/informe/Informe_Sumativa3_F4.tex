@@ -1,0 +1,423 @@
+\documentclass[11pt,a4paper]{article}
+
+% ===================== Codificación y fuentes =====================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% ===================== Página y utilidades ========================
+\usepackage[left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage[most]{tcolorbox}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+
+% ===================== Etiquetas en español (sin babel) ===========
+\renewcommand{\contentsname}{Índice}
+\renewcommand{\figurename}{Figura}
+\renewcommand{\tablename}{Tabla}
+\renewcommand{\refname}{Bibliografía}
+
+% ===================== Escala de grises (sin color) ================
+\definecolor{negro}{RGB}{0,0,0}
+\definecolor{gris}{RGB}{90,90,90}
+\definecolor{grisclaro}{RGB}{150,150,150}
+\definecolor{fillgray}{RGB}{175,175,175}
+
+% ===================== Hipervínculos (negro) =======================
+\hypersetup{colorlinks=true, linkcolor=negro, urlcolor=negro, citecolor=negro}
+
+% ===================== Estilo de títulos ===========================
+\titleformat{\section}{\large\bfseries\color{negro}}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries\color{negro}}{\thesubsection}{0.5em}{}
+\titlespacing*{\section}{0pt}{1.4em}{0.4em}
+\titlespacing*{\subsection}{0pt}{1.0em}{0.3em}
+
+% ===================== Pie de página ===============================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[L]{\footnotesize\color{gris}Magíster en Ciencia de Datos e Inteligencia Artificial}
+\fancyfoot[R]{\footnotesize\color{gris}\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% ===================== Comandos del docente ========================
+\newcommand{\guia}[1]{{\small\itshape\color{gris}#1}\par\vspace{0.15em}}
+\newcommand{\resp}{{\footnotesize\itshape\color{fillgray}[\,Desarrollen aquí\,]}\par\vspace{1.1em}}
+\newcommand{\placeholder}[1]{{\bfseries\color{gris}[\,Pendiente ejecución Notebook S3: #1\,]}}
+
+% Caja de información de la evaluación:
+\newtcolorbox{infobox}[1][Información de la evaluación]{colback=black!3,colframe=negro,
+  fonttitle=\bfseries,coltitle=white,title={#1},boxrule=0.6pt,arc=1pt,
+  left=8pt,right=8pt,top=6pt,bottom=6pt,breakable}
+
+% Caja de conexión con evaluaciones previas:
+\newtcolorbox{conexionbox}[1][Conexión con evaluaciones anteriores]{colback=black!6,colframe=gris,
+  fonttitle=\bfseries,coltitle=white,title={#1},boxrule=0.6pt,arc=1pt,
+  left=8pt,right=8pt,top=6pt,bottom=6pt,breakable}
+
+% ===================== Datos del grupo ==============================
+\newcommand{\proyTitulo}{Modelamiento Predictivo Integrado del Atraso Académico en Educación Superior}
+\newcommand{\proyIntegrantes}{Fernanda Ovalle Román \ Sebastián Cajales Cid \ César Lorca Bacián \ Jorge Álvarez Ossandón}
+\newcommand{\proyDataset}{Titulados de Educación Superior 2025 -- Datos Abiertos Mineduc / SIES}
+\newcommand{\proyDocente}{Jean Paul Maidana González}
+\newcommand{\proyFecha}{Octubre 2026}
+\newcommand{\proyRepo}{\url{https://github.com/jaossandon/sumativa1-f2-mcdi501}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.35em}
+
+\begin{document}
+\pagenumbering{gobble}
+
+\thispagestyle{empty}
+\begin{center}
+\vspace*{1.0cm}
+\includegraphics[height=4.4cm]{logo_unab.png}\[1.3cm]
+
+{\footnotesize\color{gris}\MakeUppercase{Magíster en Ciencia de Datos e Inteligencia Artificial}}\[0.15cm]
+{\footnotesize\color{grisclaro}MCDI501: Estadística Computacional para la Toma de Decisiones}\[2.0cm]
+
+{\Large\bfseries\color{negro} Evaluación Sumativa 3}\[0.45cm]
+{\large\color{negro} Modelamiento Predictivo Integrado}\[1.0cm]
+
+{\small\itshape\color{gris} Informe técnico grupal \textperiodcentered\ 60\,\%}
+\end{center}
+
+\vspace{1.6cm}
+
+\begin{flushleft}
+\setlength{\extrarowheight}{5pt}
+\begin{tabular}{@{}>{\bfseries\color{negro}}l l@{}}
+Título del proyecto: & \proyTitulo \
+Integrantes:         & \begin{tabular}[t]{@{}l@{}} Fernanda Ovalle Román \ Sebastián Cajales Cid \ César Lorca Bacián \ Jorge Álvarez Ossandón \end{tabular} \
+Dataset:             & \proyDataset \
+Docente:             & \proyDocente \
+Fecha:               & \proyFecha \
+Repositorio GitHub:  & \proyRepo \
+\end{tabular}
+\end{flushleft}
+
+\clearpage
+\pagenumbering{arabic}
+\begin{infobox}
+\textbf{Fase del proyecto:} Fase 4: Presentación y comunicación\
+\textbf{Modalidad:} Grupal (4 integrantes)\qquad\textbf{Ponderación:} 60\,\% de la nota final\
+\textbf{Entregables:} Informe final PDF (máx.\ 10 págs.)\ \textperiodcentered\ Notebook maestro \texttt{.ipynb}\ \textperiodcentered\ Presentación (video de 10 min)\ \textperiodcentered\ Repositorio GitHub completo\
+\textbf{Resultados de aprendizaje:} RA1, RA2, RA3 (integración total del curso).\
+\textbf{Prerrequisitos:} Sumativas 1 y 2 completadas y validadas.
+\end{infobox}
+
+\begin{conexionbox}
+Esta evaluación \textbf{no es independiente}: todas las decisiones metodológicas (manejo de datos faltantes, selección de variables, validación de modelos, evaluación de desempeño y análisis de robustez) se fundamentan directamente en los hallazgos de S1 y S2. Se evidencia explícitamente la progresión continua  \to S_2 \to S_3$: los diagnósticos de calidad y correlación de S1 junto a las validaciones por remuestreo (Bootstrap BCa, simulación Monte Carlo y Jackknife por institución) de S2 informan cada paso del modelamiento predictivo en S3.
+\end{conexionbox}
+
+\vspace{0.5em}
+\tableofcontents
+\newpage
+
+% ===================== RESUMEN EJECUTIVO =====================
+\section*{Resumen Ejecutivo}
+\addcontentsline{toc}{section}{Resumen Ejecutivo}
+
+El presente informe consolida el proyecto de modelamiento predictivo sobre la duración real y el atraso académico en la educación universitaria en Chile, utilizando el registro oficial de Titulados de Educación Superior 2025 del Mineduc ( = 105.063$). El objetivo central es predecir la probabilidad de que un estudiante experimente un \textbf{atraso alto} (definido operacionalmente en S1 y S2 como un atraso superior a 4 semestres sobre la duración formal del plan curricular) mediante técnicas de regresión logística, evaluando rigurosamente el impacto del tratamiento de datos faltantes y la estabilidad paramétrica mediante remuestreo bootstrap ( \ge 1.000$ iteraciones).
+
+La progresión metodológica del estudio integra tres fases complementarias:
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Fase 1 (S1):} Diagnóstico exploratorio e inferencial paramétrico, detección de 12,75\,\% de faltantes administrativos en la cohorte de ingreso y caracterización de variables clave.
+\item \textbf{Fase 2 (S2):} Validación computacional no paramétrica (Bootstrap percentil y BCa con  = 10.000$, pruebas de permutación, simulación Monte Carlo de cohortes y Jackknife por institución), demostrando que las correlaciones son estables y que los atípicos afectan la magnitud de colas pero no la dirección de los efectos.
+\item \textbf{Fase 3 (S3):} Imputación inteligente de datos faltantes mediante regresión múltiple, comparación sistemática con eliminación y media, ajuste de tres especificaciones logísticas (teórica, stepwise e información AIC/BIC), diagnóstico de supuestos (VIF, linealidad, residuos y observaciones influyentes) y evaluación de sensibilidad de la política analítica.
+\end{enumerate}
+
+\placeholder{Cifras definitivas de desempeño (AUC-ROC, Accuracy, variables finales de mayor peso odds ratio y conclusión de impacto de la imputación).}
+
+% ===================== INTRODUCCIÓN =====================
+\section*{Introducción y Contexto del Problema}
+\addcontentsline{toc}{section}{Introducción y Contexto del Problema}
+
+La sobre-duración de los programas de pregrado universitario representa un desafío estructural crítico en el sistema de educación superior chileno, con profundas repercusiones financieras, laborales e institucionales. Tanto los aranceles reales como los costos de oportunidad para los estudiantes se incrementan sustantivamente ante cada semestre de retraso, mientras que las instituciones enfrentan restricciones asociadas a las políticas de gratuidad y a los criterios de acreditación de la Comisión Nacional de Acreditación (CNA).
+
+En la Sumativa 1 se identificó que la duración formal de las carreras no refleja la trayectoria efectiva de titulación: el atraso medio asciende a 3,40 semestres ({95\%} [3,37; 3,43]$), con una marcada asimetría positiva (mediana de 2 semestres) y una brecha sistemática desfavorable para los hombres ($+1,07$ semestres) y estudiantes de jornadas vespertinas. En la Sumativa 2 se demostró que esta brecha se reduce a la mitad (bash,55$ semestres) al controlar por área de conocimiento (dado que los hombres se concentran en carreras tecnológicas y de ingeniería con duraciones intrínsecamente más largas) y que existe dependencia jerárquica por institución educativa (error estándar Jackknife 3,5 veces superior al de Welch). 
+
+Con estos antecedentes consolidados, la Sumativa 3 aborda la formalización de un modelo predictivo supervisado que permita anticipar tempranamente el riesgo de rezago severo, garantizando a la vez la robustez de las inferencias ante diferentes decisiones de preprocesamiento de datos.
+
+\newpage
+
+% ===================== SECCIÓN 1: FALTANTES =====================
+\section{Manejo inteligente de datos faltantes}
+\guia{(21 pts) Parte 1.}
+
+\subsection{Referencia al análisis de faltantes de S1}
+\guia{Resuman qué variables presentan faltantes, su porcentaje por variable y el patrón identificado (MCAR, MAR o MNAR), referenciando directamente los resultados de S1 (no repitan el análisis).}
+
+En la Sumativa 1, sobre un total de 105.063 titulados de pregrado universitario, se identificó que las variables \texttt{anio\_ing\_carr\_ori} y \texttt{sem\_ing\_carr\_ori} contenían valores artificiales de relleno administrativo codificados originalmente como \texttt{1900} y \texttt{0}, respectivamente. Dicha condición afectó exactamente a 3.396$ observaciones, equivalentes al \textbf{12,75\,\%} del universo analizado. Al convertir estos códigos a \texttt{NaN}, fue imposible calcular de manera directa las variables derivadas \texttt{semestres\_reales} y \texttt{atraso\_semestres} para dichos individuos, reduciendo la muestra completa a  = 91.667$.
+
+Conforme a la taxonomía de Little y Rubin (2019), el mecanismo generador de pérdida no es \textit{Missing Completely at Random} (MCAR), dado que la probabilidad de ausencia de información histórica no es homogénea entre programas ni instituciones. En S1 se caracterizó este patrón como \textbf{Missing at Random (MAR)}, puesto que la no observación de la fecha de ingreso original está correlacionada con variables institucionales y académicas observables: tipos específicos de institución, procesos de convalidación externa y programas especiales en jornada vespertina. Dado que el mecanismo es MAR condicionado a variables del registro curricular, la eliminación de casos completos (\textit{complete-case analysis}) introduce sesgos potenciales de selección, justificando plenamente el uso de métodos de imputación basados en información auxiliar observada.
+
+\subsection{Imputación mediante regresión lineal múltiple}
+\guia{Para cada variable numérica con faltantes: seleccionen 3 a 5 predictores usando la matriz de correlaciones de S1, priorizando las validadas como estables en S2; ajusten el modelo con observaciones completas, verifiquen supuestos, evalúen su desempeño e imputen documentando cuántos valores fueron imputados.}
+
+Para imputar el tiempo efectivo de egreso y recuperar los 3.396$ casos incompletos, se modela la variable continua \texttt{semestres\_reales} a partir de los predictores que mostraron las correlaciones más intensas y robustas en S1, ratificadas como altamente estables mediante remuestreo bootstrap en S2:
+\begin{enumerate}[leftmargin=*]
+\item \texttt{edad\_titulacion}: Correlación lineal positiva moderada-fuerte ($\rho = 0,466$, {95\%} [0,460; 0,472]$), validada con error estándar mínimo ( = 0,003$).
+\item \texttt{dur\_total\_carr}: Duración formal del plan curricular, con correlación teórica inversa respecto a la edad de ingreso y directa respecto al ciclo formativo.
+\item \texttt{area\_conocimiento}: Efecto fijo por disciplina académica (particularmente Tecnología, Ciencias Básicas y Salud).
+\item \texttt{jornada}: Diferencial estructural diurno versus vespertino (brecha de atraso alto de 9,06 puntos porcentuales validada en S2).
+\end{enumerate}
+
+El modelo de imputación se especifica como:
+\begin{equation}
+\widehat{\text{semestres\_reales}}_i = \beta_0 + \beta_1\,\text{edad\_titulacion}_i + \beta_2\,\text{dur\_total\_carr}_i + \sum_{k} \gamma_k\,\text{Area}_{ik} + \delta\,\text{Vespertino}_i + \varepsilon_i
+\end{equation}
+
+El ajuste se realiza exclusivamente sobre las 1.667$ observaciones con información completa. Los supuestos del modelo de regresión lineal (normalidad asintótica de residuos, homocedasticidad y factor de inflación de varianza  < 5$) son evaluados previo a la imputación.
+
+\begin{table}[h!]
+\centering
+\small
+\caption{Métricas de ajuste y calidad del modelo de imputación por regresión lineal múltiple.}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Variable Objetivo} & \textbf{Predictores Clave} & $\mathbf{R^2}$ & \textbf{RMSE} & \textbf{Casos Imputados} \
+\midrule
+\texttt{semestres\_reales} & Edad titulación, Duración formal, Área, Jornada & \placeholder{^2$} & \placeholder{RMSE} & 13.396 \
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Comparación de estrategias de imputación}
+\guia{Comparen eliminación, imputación simple e imputación por regresión: tamaño muestral, distribución de variables y preservación de correlaciones de S1. Justifiquen la estrategia elegida para el resto del desarrollo.}
+
+Se contrastan tres estrategias operacionales para el tratamiento de los datos no observados:
+\begin{itemize}[leftmargin=*]
+\item \textbf{Estrategia 1 (Eliminación / Complete-Case):} Exclusión listwise de las 3.396$ filas sin fecha de ingreso ( = 91.667$).
+\item \textbf{Estrategia 2 (Imputación Simple):} Asignación de la media o mediana condicionada a la duración formal ( = 105.063$).
+\item \textbf{Estrategia 3 (Regresión Lineal Múltiple):} Predicción preservando la covarianza multivariada ( = 105.063$).
+\end{itemize}
+
+\begin{table}[h!]
+\centering
+\small
+\caption{Comparación de propiedades distribucionales y correlaciones según estrategia de imputación.}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Estrategia} & $\mathbf{n}$ & \textbf{Media} & \textbf{Desv. Est.} & \textbf{Asimetría} & $\mathbf{Corr(\text{atraso, edad})}$ \
+\midrule
+1. Eliminación (Complete-case) & 91.667 & 3,40 & 4,51 & Positiva & 0,466 \
+2. Imputación simple (mediana) & 105.063 & \placeholder{Media} & \placeholder{DE} & \placeholder{Asim} & \placeholder{Corr} \
+3. Imputación regresión lineal & 105.063 & \placeholder{Media} & \placeholder{DE} & \placeholder{Asim} & \placeholder{Corr} \
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Justificación de la base para modelamiento:} \placeholder{Justificar la elección del dataset en base a la no distorsión de la varianza y la preservación de la estructura de covarianza validada en S2.}
+
+\newpage
+
+% ===================== SECCIÓN 2: LOGÍSTICA =====================
+\section{Clasificación mediante regresión logística}
+\guia{(30 pts para la construcción de modelos + 30 pts para bootstrap, ver más abajo) Parte 2.}
+
+\subsection{Preparación de datos informada por S1}
+\guia{Dataset con la estrategia de imputación elegida; partición train/test (70/30); tratamiento justificado de los outliers de S1; estandarización y codificación de variables categóricas.}
+
+\begin{itemize}[leftmargin=*]
+\item \textbf{Variable objetivo:} Se define la variable dicotómica  = \texttt{atraso\_alto}$, donde  = 1$ si $\texttt{atraso\_semestres}_i > 4$, y bash$ en caso contrario, operacionalizando el atraso severo identificado en S1 y S2.
+\item \textbf{Partición de datos:} Partición 70\,\% para entrenamiento y 30\,\% para prueba, estratificada por la variable objetivo con semilla fijada en \texttt{random\_state = 42}.
+\item \textbf{Tratamiento de outliers:} En S1 se identificaron 3.201$ observaciones atípicas según el criterio de Tukey (,5 \times IQR$). No obstante, el análisis de robustez de S2 demostró que dichos puntos reflejan rezagos extremos reales de trayectorias formativas complejas y que su exclusión altera la magnitud de las colas pero preserva intacto el signo y la dirección de las asociaciones. En consecuencia, se retienen en el análisis para no perder validez ecológica.
+\item \textbf{Estandarización y codificación:} Variables continuas (\texttt{edad\_titulacion}, \texttt{dur\_total\_carr}) se escalan a media 0 y varianza unitaria (StandardScaler). Las variables categóricas (\texttt{sexo}, \texttt{jornada}, \texttt{area\_conocimiento}) se transforman mediante codificación One-Hot, omitiendo la categoría de referencia para prevenir multicolinealidad perfecta.
+\end{itemize}
+
+\subsection{Selección de variables informada por S1 y S2}
+\guia{Construyan tres modelos: (1) basado en correlaciones de S1 validadas en S2, (2) selección stepwise, (3) basado en AIC/BIC. Documenten variables, coeficientes y odds ratios de cada uno, explicando cómo S1 y S2 informaron la selección.}
+
+Se evalúan tres especificaciones alternativas de la probabilidad $\pi_i = P(Y_i = 1 \mid \mathbf{x}_i)$:
+\begin{align}
+\text{Logit}(\pi_i) &= \ln\left(\frac{\pi_i}{1 - \pi_i}\right) = \mathbf{x}_i^T \boldsymbol{\beta}
+\end{align}
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Modelo 1 (Teórico S1/S2):} Especificación fundamentada sustantivamente. Incluye sexo, jornada, área de conocimiento y edad de titulación, reflejando el control por área sugerido en S2 para aislar el efecto de género y el impacto de la jornada vespertina.
+\item \textbf{Modelo 2 (Stepwise):} Selección iterativa paso a paso basada en el test de razón de verosimilitud ( < 0,05$).
+\item \textbf{Modelo 3 (Criterios de Información):} Selección guiada por la minimización del AIC y BIC.
+\end{enumerate}
+
+\begin{table}[h!]
+\centering
+\scriptsize
+\caption{Comparación de estimaciones de los tres modelos de regresión logística.}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Modelo / Covariable} & $\boldsymbol{\beta}$ & \textbf{EE} & \textbf{Valor $} & \textbf{Odds Ratio (^\beta$)} & \textbf{IC 95\,\% (OR)} & \textbf{AIC / BIC} \
+\midrule
+\textbf{Modelo 1 (Teórico S1/S2)} & & & & & & \placeholder{AIC} \
+Intercepto & \placeholder{$\beta$} & \placeholder{EE} & \placeholder{$} & \placeholder{OR} & \placeholder{IC} & \
+Sexo (Hombre) & \placeholder{$\beta$} & \placeholder{EE} & \placeholder{$} & \placeholder{OR} & \placeholder{IC} & \
+Jornada (Vespertina) & \placeholder{$\beta$} & \placeholder{EE} & \placeholder{$} & \placeholder{OR} & \placeholder{IC} & \
+Edad de titulación & \placeholder{$\beta$} & \placeholder{EE} & \placeholder{$} & \placeholder{OR} & \placeholder{IC} & \
+Áreas de conocimiento & \placeholder{$\beta$} & \placeholder{EE} & \placeholder{$} & \placeholder{OR} & \placeholder{IC} & \
+\midrule
+\textbf{Modelo 2 (Stepwise)} & & & & & & \placeholder{AIC} \
+Variables seleccionadas & \multicolumn{5}{c}{\placeholder{Resumen coeficientes y significancia}} & \
+\midrule
+\textbf{Modelo 3 (Criterios Inf.)} & & & & & & \placeholder{AIC} \
+Variables seleccionadas & \multicolumn{5}{c}{\placeholder{Resumen coeficientes y significancia}} & \
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
+
+\subsection{Evaluación de estabilidad mediante bootstrap}
+\guia{(30 pts) Apliquen bootstrap (como en S2) al mejor modelo logístico; construyan IC al 95\,\% para coeficientes y odds ratios; identifiquen parámetros inestables comparando con los IC tradicionales.}
+
+Para evaluar si los coeficientes estimados sufren de inestabilidad o sesgo asintótico debido a la sobredispersión o agrupamiento institucional detectado en S2, se aplica remuestreo bootstrap no paramétrico con  \ge 1.000$ réplicas sobre el conjunto de entrenamiento:
+\begin{equation}
+\boldsymbol{\beta}^{*(b)} \sim \text{Logit}(\mathbf{X}^{*(b)}, \mathbf{y}^{*(b)}), \quad b = 1, \dots, B
+\end{equation}
+
+Se calculan los intervalos de confianza empíricos al 95\,\% (método percentil y BCa) para cada $\beta_j$ y cada Odds Ratio ^{\beta_j}$, y se contrastan con los intervalos asintóticos tradicionales de Wald ($\widehat{\beta}_j \pm 1,96\,\text{EE}(\widehat{\beta}_j)$).
+
+\begin{table}[h!]
+\centering
+\small
+\caption{Estabilidad de coeficientes y Odds Ratios: Wald asintótico frente a Bootstrap al 95\,\% ( = 1.000$).}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Parámetro} & $\mathbf{e^{\widehat{\beta}}}$ & \textbf{IC 95\,\% Wald} & \textbf{IC 95\,\% Bootstrap} & \textbf{Evaluación Estabilidad} \
+\midrule
+Sexo (Hombre) & \placeholder{OR} & \placeholder{IC Wald} & \placeholder{IC Boot} & \placeholder{Robusto / Inestable} \
+Jornada (Vespertina) & \placeholder{OR} & \placeholder{IC Wald} & \placeholder{IC Boot} & \placeholder{Robusto / Inestable} \
+Edad titulación & \placeholder{OR} & \placeholder{IC Wald} & \placeholder{IC Boot} & \placeholder{Robusto / Inestable} \
+Tecnología / Ingeniería & \placeholder{OR} & \placeholder{IC Wald} & \placeholder{IC Boot} & \placeholder{Robusto / Inestable} \
+Salud & \placeholder{OR} & \placeholder{IC Wald} & \placeholder{IC Boot} & \placeholder{Robusto / Inestable} \
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Diagnóstico de supuestos}
+\guia{VIF (multicolinealidad), linealidad en el logit cuando corresponda, observaciones influyentes y análisis de residuos.}
+
+\begin{itemize}[leftmargin=*]
+\item \textbf{Multicolinealidad (VIF):} Se computa el Factor de Inflación de la Varianza sobre las variables independientes para verificar la ausencia de redundancia severa ( < 5$).
+\item \textbf{Linealidad en el logit (Box-Tidwell):} Se evalúa la linealidad de las covariables continuas (\texttt{edad\_titulacion}) contrastando el término  \ln(X)$.
+\item \textbf{Observaciones influyentes:} Se calculan la Distancia de Cook y apalancamientos (\textit{leverage}) para detectar casos que distorsionen los parámetros.
+\item \textbf{Residuos Deviance y Pearson:} Examen de los residuos deviance para contrastar la bondad de ajuste del modelo.
+\end{itemize}
+
+\subsection{Evaluación de desempeño predictivo}
+\guia{Para los tres modelos: matrices de confusión (train y test), accuracy, precision, recall, F1-score, curvas ROC y AUC. Seleccionen y justifiquen el modelo final.}
+
+\begin{table}[h!]
+\centering
+\small
+\caption{Métricas predictivas de clasificación en los conjuntos de Train y Test.}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Modelo / Partición} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{AUC-ROC} & \textbf{Brier Score} \
+\midrule
+\textbf{Modelo 1 (Teórico)} & & & & & & \
+Train & \placeholder{Acc} & \placeholder{Prec} & \placeholder{Rec} & \placeholder{F1} & \placeholder{AUC} & \placeholder{Brier} \
+Test & \placeholder{Acc} & \placeholder{Prec} & \placeholder{Rec} & \placeholder{F1} & \placeholder{AUC} & \placeholder{Brier} \
+\midrule
+\textbf{Modelo 2 (Stepwise)} & & & & & & \
+Test & \placeholder{Acc} & \placeholder{Prec} & \placeholder{Rec} & \placeholder{F1} & \placeholder{AUC} & \placeholder{Brier} \
+\midrule
+\textbf{Modelo 3 (AIC/BIC)} & & & & & & \
+Test & \placeholder{Acc} & \placeholder{Prec} & \placeholder{Rec} & \placeholder{F1} & \placeholder{AUC} & \placeholder{Brier} \
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Modelo final seleccionado:} \placeholder{Declaración formal y justificación del modelo ganador considerando parsimonia, interpretabilidad de negocio y AUC-ROC en Test.}
+
+\newpage
+
+% ===================== SECCIÓN 3: IMPACTO IMPUTACIÓN =====================
+\section{Análisis comparativo del impacto de la imputación}
+\guia{(9 pts) Ajusten el modelo final con los tres datasets (eliminación, imputación simple, imputación por regresión); comparen tamaño muestral, coeficientes, IC, AUC y accuracy en test; analicen si la estrategia de imputación cambia las conclusiones y formulen recomendaciones.}
+
+Para responder a la pregunta analítica central sobre si la técnica de manejo de datos faltantes altera las decisiones institucionales, se re-ajusta la especificación final del modelo logístico de manera idéntica sobre los tres datasets preparados en la Parte 1.
+
+\begin{table}[h!]
+\centering
+\small
+\caption{Impacto de la estrategia de imputación en los parámetros y desempeño del modelo logístico final.}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Métrica / Parámetro} & \textbf{1. Eliminación} & \textbf{2. Imp. Simple} & \textbf{3. Imp. Regresión} & \textbf{Impacto Decisión} \
+\midrule
+Tamaño muestral ($) & 91.667 & 105.063 & 105.063 & Pérdida de 12,75\,\% \
+$\beta_{\text{sexo(hombre)}}$ & \placeholder{$\beta$} & \placeholder{$\beta$} & \placeholder{$\beta$} & \placeholder{Estable/Cambia} \
+IC 95\,\% $\beta_{\text{sexo}}$ & \placeholder{IC} & \placeholder{IC} & \placeholder{IC} & \placeholder{Amplitud} \
+$\beta_{\text{jornada(vesp)}}$ & \placeholder{$\beta$} & \placeholder{$\beta$} & \placeholder{$\beta$} & \placeholder{Estable/Cambia} \
+$\beta_{\text{edad\_titulacion}}$ & \placeholder{$\beta$} & \placeholder{$\beta$} & \placeholder{$\beta$} & \placeholder{Estable/Cambia} \
+Accuracy (Test) & \placeholder{Acc} & \placeholder{Acc} & \placeholder{Acc} & \placeholder{Variación} \
+AUC-ROC (Test) & \placeholder{AUC} & \placeholder{AUC} & \placeholder{AUC} & \placeholder{Variación} \
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Conclusión de negocio:} \placeholder{Discutir si la imputación por regresión modifica sustantivamente los Odds Ratios o la jerarquía de factores de riesgo respecto al complete-case analysis.}
+
+% ===================== SECCIÓN 4: INFORME INTEGRADO =====================
+\section{Discusión y Recomendaciones para la Toma de Decisiones}
+\guia{(9 pts) Máximo 10 páginas: resumen ejecutivo, introducción, metodología integrada, resultados integrados, discusión y conclusiones, destacando explícitamente cómo cada fase (S1, S2, S3) informa a la siguiente.}
+
+\subsection{Integración de la cadena metodológica  \to S_2 \to S_3$}
+La fortaleza central de este estudio radica en su estricta coherencia acumulativa:
+\begin{itemize}[leftmargin=*]
+\item En \textbf{S1}, la inspección de datos evitó el descarte apresurado de atípicos y aisló la no-respuesta administrativa (12,75\,\%), alertando sobre la asimetría del atraso.
+\item En \textbf{S2}, la inferencia clásica fue contrastada con métodos de remuestreo, evidenciando que las correlaciones entre atraso, duración formal y edad eran auténticamente lineales y estables, pero advirtiendo que los titulados no son independientes entre universidades (efecto agrupamiento institucional vía Jackknife).
+\item En \textbf{S3}, estos hallazgos guiaron una imputación multivariada no ingenua y permitieron contrastar la inferencia asintótica con bootstrap en la regresión logística, garantizando que los coeficientes y Odds Ratios utilizados para políticas institucionales no sean artefactos de supuestos no verificados.
+\end{itemize}
+
+\subsection{Recomendaciones para la gestión institucional}
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Sistemas de Alerta Temprana Diferenciados por Área:} Dado que el efecto del género está fuertemente mediado por el área de conocimiento (demostrado en S2 y modelado en S3), los planes de retención y apoyo académico deben focalizarse en facultades de Ingeniería y Tecnología, con especial monitoreo en programas vespertinos.
+\item \textbf{Ajuste de Políticas de Financiamiento y Gratuidad:} La alta concentración de estudiantes que superan los 4 semestres de rezago sugiere que los plazos de financiamiento deben considerar mecanismos de flexibilización curricular para evitar el sobreendeudamiento y la deserción de último año.
+\end{enumerate}
+
+\newpage
+
+% ===================== SECCIÓN 5: PRESENTACIÓN =====================
+\section{Presentación del proyecto y repositorio}
+\guia{(6 pts) 10 minutos (video o en vivo): problema, metodología integrada, principales resultados y conclusiones/recomendaciones finales, enfatizando la progresión S1 $\to$ S2 $\to$ S3.}
+
+\subsection{Estructura y distribución del video grupal (10 minutos)}
+La exposición audiovisual se organiza en cuatro bloques equitativos de 2,5 minutos:
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Bloque 1 -- Fernanda Ovalle:} Contexto del pregrado universitario chileno, planteamiento del problema de sobre-duración y hallazgos clave de calidad de datos en S1.
+\item \textbf{Bloque 2 -- Jorge Álvarez:} Metodología computacional de validación en S2 (Bootstrap BCa, simulación Monte Carlo de cohortes y análisis Jackknife de dependencia institucional).
+\item \textbf{Bloque 3 -- César Lorca:} Manejo inteligente de datos faltantes, comparación de estrategias de imputación y ajuste de especificaciones de regresión logística en S3.
+\item \textbf{Bloque 4 -- Sebastián Cajales:} Diagnóstico de estabilidad bootstrap del modelo final, evaluación comparativa del impacto de la imputación y recomendaciones estratégicas de negocio.
+\end{enumerate}
+
+\subsection{Trazabilidad y reproducibilidad en GitHub}
+El repositorio oficial del proyecto (\url{https://github.com/jaossandon/sumativa1-f2-mcdi501}) conserva la trazabilidad completa y reproducible de todas las etapas del magíster:
+\begin{itemize}[leftmargin=*]
+\item \texttt{S1/}: Notebook de análisis exploratorio e inferencial y reporte técnico S1.
+\item \texttt{S2/}: Notebook ejecutado, informe PDF y archivo de resultados validados (\texttt{resultados\_validados.csv} y \texttt{.md}).
+\item \texttt{S3/}: Notebook maestro de modelamiento integrado (\texttt{Sumativa3\_F4\_Titulados.ipynb}) e informe final PDF en plantilla institucional.
+\end{itemize}
+
+% ===================== BIBLIOGRAFÍA =====================
+\section{Bibliografía (APA 7.ª edición)}
+
+\begin{itemize}[leftmargin=*]
+\item Centro de Estudios Mineduc. (2025). \textit{Base de datos oficial de Titulados en Educación Superior 2025}. Servicio de Información de Educación Superior (SIES). Ministerio de Educación de Chile. \url{https://datosabiertos.mineduc.cl}
+\item Davison, A. C., \& Hinkley, D. V. (1997). \textit{Bootstrap methods and their application}. Cambridge University Press.
+\item Efron, B., \& Tibshirani, R. J. (1994). \textit{An introduction to the bootstrap}. CRC press.
+\item Fox, J., \& Weisberg, S. (2019). \textit{An R companion to applied regression} (3.ª ed.). SAGE Publications.
+\item Hosmer, D. W., Lemeshow, S., \& Sturdivant, R. X. (2013). \textit{Applied logistic regression} (3.ª ed.). John Wiley \& Sons.
+\item Little, R. J., \& Rubin, D. B. (2019). \textit{Statistical analysis with missing data} (3.ª ed.). John Wiley \& Sons.
+\item Pedregosa, F., Varoquaux, G., Gramfort, A., Michel, V., Thirion, B., Grisel, O., Blondel, M., Prettenhofer, P., Weiss, R., Dubourg, V., Vanderplas, J., Passos, A., Cournapeau, D., Brucher, M., Perrot, M., \& Duchesnay, É. (2011). Scikit-learn: Machine learning in Python. \textit{Journal of Machine Learning Research}, 12, 2825--2830.
+\item van Buuren, S. (2018). \textit{Flexible imputation of missing data} (2.ª ed.). CRC press.
+\end{itemize}
+
+\end{document}
