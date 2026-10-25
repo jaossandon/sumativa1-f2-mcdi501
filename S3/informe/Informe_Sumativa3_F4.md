@@ -1,200 +1,149 @@
-# Evaluación Sumativa 3: Modelamiento Predictivo Integrado
-**MCDI501: Estadística Computacional para la Toma de Decisiones**  
-*Magíster en Ciencia de Datos e Inteligencia Artificial — Universidad Andrés Bello (UNAB)*
+# Evaluación Sumativa 3: Cierre y Comunicación
+## Modelamiento Predictivo Integrado del Atraso Académico en Educación Superior
+**Magíster en Ciencia de Datos e Inteligencia Artificial**  
+*MCDI501: Estadística Computacional para la Toma de Decisiones — Universidad Andrés Bello*  
+**Grupo 6:** Fernanda Ovalle Román, Sebastián Cajales Cid, César Lorca Bacián, Jorge Álvarez Ossandón  
+**Docente:** Jean Paul Maidana González · **Fecha:** 28 de octubre de 2026  
+**Repositorio GitHub Oficial:** [https://github.com/jaossandon/sumativa1-f2-mcdi501](https://github.com/jaossandon/sumativa1-f2-mcdi501)
 
 ---
 
-### Datos del Proyecto
-- **Título del proyecto:** Modelamiento Predictivo Integrado del Atraso Académico en Educación Superior
-- **Integrantes:**
-  - Fernanda Ovalle Román
-  - Sebastián Cajales Cid
-  - César Lorca Bacián
-  - Jorge Álvarez Ossandón
-- **Dataset:** Titulados de Educación Superior 2025 – Datos Abiertos Mineduc / SIES ($n = 105.063$)
-- **Docente:** Jean Paul Maidana González
-- **Fecha:** Octubre 2026
-- **Repositorio GitHub:** [jaossandon/sumativa1-f2-mcdi501](https://github.com/jaossandon/sumativa1-f2-mcdi501)
+### Resumen Ejecutivo
+
+Este informe consolida el proyecto de modelamiento predictivo sobre la duración real y el atraso académico en la educación universitaria en Chile, utilizando el registro oficial de Titulados de Educación Superior 2025 del Mineduc ($N = 105.063$). El objetivo central es predecir la probabilidad de que un estudiante experimente un **atraso alto** (definido operacionalmente en S1 y S2 como un rezago superior a 4 semestres sobre la duración formal del plan curricular) mediante regresión logística supervisada, contrastando empíricamente el impacto del tratamiento de datos no observados y la estabilidad de la inferencia mediante remuestreo bootstrap ($B = 1.000$ réplicas) e imputación múltiple congeniada.
+
+#### Aportes y Hallazgos Clave:
+1. **Mecanismo MAR y fracaso de la imputación simple:** Los 13.396 registros con fecha de ingreso administrativo no informada (12,75 %) siguen un patrón *Missing at Random* (MAR) condicionado a la modalidad de estudio (A Distancia tiene 75,9 % de no-observación frente a 1,5 % en Diurna; razón de disparidad de 50:1). La imputación simple por mediana ($E_2$) es inadmisible: invierte el signo de 3 jornadas y de Educación, inflando artificialmente la tasa de atraso alto de 24,5 % a 32,7 %.
+2. **Modelo logístico óptimo ($M_2$):** La especificación que incorpora Sexo, Área de conocimiento, Jornada y Edad de ingreso minimiza los criterios de información ($	ext{AIC} = 75.421,2$; $	ext{BIC} = 75.568,5$). En la prueba común observada ($n=27.508$), alcanza un $	ext{AUC} = 0,662$ y una exactitud de $65,3\,\%$ (umbral de Youden $= 0,2246$, sensibilidad $= 57,7\,\%$, especificidad $= 67,8\,\%$).
+3. **Factores de riesgo estructurales:** Ser mujer reduce el riesgo de atraso severo ($	ext{OR} = 0,75$; IC 95 % $[0,72; 0,78]$), mientras que cursar Derecho ($	ext{OR} = 4,42$), Agropecuaria ($	ext{OR} = 2,42$), Tecnología e Ingeniería ($	ext{OR} = 2,14$) y Ciencias Básicas ($	ext{OR} = 2,03$) lo incrementa sustancialmente.
+4. **Dominancia de la heterogeneidad institucional:** El remuestreo bootstrap ($B=1.000$) y el análisis clúster por universidad demuestran que los errores estándar se ensanchan entre 3,5 y 9,2 veces respecto a la inferencia asintótica de Wald, confirmando el hallazgo de Jackknife de la Sumativa 2: la incertidumbre contextual domina ampliamente sobre la del remuestreo.
+5. **Corrección mediante Imputación Múltiple Congeniada (MI):** Se identificó que la imputación por regresión ($E_3$) distorsionó los odds ratios de jornada al omitir dicha covariable en su modelo lineal (asignando un atraso plano de $pprox 20\,\%$). La corrección mediante Imputación Múltiple ($m=20$, reglas de Rubin) redujo la discrepancia media con casos completos del 18,5 % al 7,3 %, calibrando plenamente las probabilidades predichas.
 
 ---
 
-## Resumen Ejecutivo
+## 1. Manejo Inteligente de Datos Faltantes (Parte 1)
 
-El presente informe consolida el proyecto de modelamiento predictivo sobre la duración real y el atraso académico en la educación universitaria en Chile, utilizando el registro oficial de Titulados de Educación Superior 2025 del Mineduc ($n = 105.063$). El objetivo central es predecir la probabilidad de que un estudiante experimente un **atraso alto** (definido operacionalmente en S1 y S2 como un atraso superior a 4 semestres sobre la duración formal del plan curricular) mediante técnicas de regresión logística, evaluando rigurosamente el impacto del tratamiento de datos faltantes y la estabilidad paramétrica mediante remuestreo bootstrap ($B \ge 1.000$ iteraciones).
+### 1.1 Diagnóstico del Mecanismo de Pérdida
+En la Sumativa 1 se constató que las variables `anio_ing_carr_ori` y `sem_ing_carr_ori` traían códigos centinela administrativos (`1900` y `0`) en 13.396 registros (12,75 % de los 105.063 titulados universitarios). Al codificarlos como `NaN`, el subconjunto con atraso directamente computable quedó en $n = 91.667$.
 
-La progresión metodológica del estudio integra tres fases complementarias:
-1. **Fase 1 (S1):** Diagnóstico exploratorio e inferencial paramétrico, detección de 12,75 % de faltantes administrativos en la cohorte de ingreso y caracterización de variables clave.
-2. **Fase 2 (S2):** Validación computacional no paramétrica (Bootstrap percentil y BCa con $B = 10.000$, pruebas de permutación, simulación Monte Carlo de cohortes y Jackknife por institución), demostrando que las correlaciones son estables y que los atípicos afectan la magnitud de colas pero no la dirección de los efectos.
-3. **Fase 3 (S3):** Imputación inteligente de datos faltantes mediante regresión múltiple, comparación sistemática con eliminación y media, ajuste de tres especificaciones logísticas (teórica, stepwise e información AIC/BIC), diagnóstico de supuestos (VIF, linealidad, residuos y observaciones influyentes) y evaluación de sensibilidad de la política analítica.
+La proporción de casos no observados varía de manera extrema según la jornada del estudiante:
+* **A Distancia:** 75,9 % incompletos ($n=9.064$)
+* **Semipresencial:** 54,1 % incompletos ($n=828$)
+* **Otra:** 51,6 % incompletos ($n=543$)
+* **Vespertina:** 36,9 % incompletos ($n=12.431$)
+* **Diurna:** 1,5 % incompletos ($n=82.197$)
 
-> **[Pendiente ejecución Notebook S3]:** Cifras definitivas de desempeño (AUC-ROC, Accuracy, variables finales de mayor peso Odds Ratio y conclusión de impacto de la imputación).
+Dado que la razón de disparidad entre extremos es de 50 a 1, se rechaza categóricamente el supuesto de pérdida completamente al azar (*MCAR*, prueba de Little $p < 0,001$). El mecanismo es **MAR** (*Missing at Random*), fuertemente ligado a programas convalidantes y regímenes flexibles. Por tanto, el descarte de casos completos introduce un sesgo de selección que castiga a las modalidades no tradicionales.
 
----
+### 1.2 Imputación por Regresión Lineal Múltiple
+Aprovechando que `anio_ing_carr_act` está observada en el 100 % de los registros incompletos y coincide en el 91,2 % con el ingreso original en completos, se modeló `semestres_reales` usando 4 predictores validados en S1 y S2: `semestres_desde_act` (sustituto cronológico), `dur_total_carr` ($ho = 0,46$), `edad_titulacion` ($ho = 0,47$) y `area_conocimiento`.
 
-## Introducción y Contexto del Problema
+* **Bondad de ajuste:** $R^2 = 0,792$, $	ext{RMSE} = 2,308$ semestres, $	ext{MAE} = 0,98$ semestres.
+* **Diagnóstico de colinealidad:** $	ext{VIF} < 2,5$ en todos los predictores.
 
-La sobre-duración de los programas de pregrado universitario representa un desafío estructural crítico en el sistema de educación superior chileno, con profundas repercusiones financieras, laborales e institucionales. Tanto los aranceles reales como los costos de oportunidad para los estudiantes se incrementan sustantivamente ante cada semestre de retraso, mientras que las instituciones enfrentan restricciones asociadas a las políticas de gratuidad y a los criterios de acreditación de la Comisión Nacional de Acreditación (CNA).
+### 1.3 Comparación de Estrategias Distribucionales
 
-En la Sumativa 1 se identificó que la duración formal de las carreras no refleja la trayectoria efectiva de titulación: el atraso medio asciende a 3,40 semestres ($IC_{95\%} [3,37; 3,43]$), con una marcada asimetría positiva (mediana de 2 semestres) y una brecha sistemática desfavorable para los hombres ($+1,07$ semestres) y estudiantes de jornadas vespertinas. En la Sumativa 2 se demostró que esta brecha se reduce a la mitad ($0,55$ semestres) al controlar por área de conocimiento (dado que los hombres se concentran en carreras tecnológicas y de ingeniería con duraciones intrínsecamente más largas) y que existe dependencia jerárquica por institución educativa (error estándar Jackknife 3,5 veces superior al de Welch). 
+| Estrategia | $n$ | Media | Desv. Est. | Asimetría | % Atraso Alto | $ho(	ext{atraso, edad})$ |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **$E_1$ · Eliminación (Casos completos)** | 91.667 | 3,40 | 4,76 | 4,41 | 24,5 % | 0,466 |
+| **$E_2$ · Imputación simple (Mediana)** | 105.063 | 3,79 | 4,61 | 4,05 | 32,7 % | 0,541 |
+| **$E_3$ · Regresión lineal multivariada** | 105.063 | 3,40 | 4,53 | 4,55 | 23,8 % | 0,468 |
 
-Con estos antecedentes consolidados, la Sumativa 3 aborda la formalización de un modelo predictivo supervisado que permita anticipar tempranamente el riesgo de rezago severo, garantizando a la vez la robustez de las inferencias ante diferentes decisiones de preprocesamiento de datos.
-
----
-
-## 1. Manejo Inteligente de Datos Faltantes (21 pts)
-
-### 1.1 Referencia al análisis de faltantes de S1
-En la Sumativa 1, sobre un total de 105.063 titulados de pregrado universitario, se identificó que las variables `anio_ing_carr_ori` y `sem_ing_carr_ori` contenían valores artificiales de relleno administrativo codificados originalmente como `1900` y `0`, respectivamente. Dicha condición afectó exactamente a $13.396$ observaciones, equivalentes al **12,75 %** del universo analizado. Al convertir estos códigos a `NaN`, fue imposible calcular de manera directa las variables derivadas `semestres_reales` y `atraso_semestres` para dichos individuos, reduciendo la muestra completa a $n = 91.667$.
-
-Conforme a la taxonomía de Little y Rubin (2019), el mecanismo generador de pérdida no es *Missing Completely at Random* (MCAR), dado que la probabilidad de ausencia de información histórica no es homogénea entre programas ni instituciones. En S1 se caracterizó este patrón como **Missing at Random (MAR)**, puesto que la no observación de la fecha de ingreso original está correlacionada con variables institucionales y académicas observables: tipos específicos de institución, procesos de convalidación externa y programas especiales en jornada vespertina. Dado que el mecanismo es MAR condicionado a variables del registro curricular, la eliminación de casos completos (*complete-case analysis*) introduce sesgos potenciales de selección, justificando plenamente el uso de métodos de imputación basados en información auxiliar observada.
-
-### 1.2 Imputación mediante regresión lineal múltiple
-Para imputar el tiempo efectivo de egreso y recuperar los $13.396$ casos incompletos, se modela la variable continua `semestres_reales` a partir de los predictores que mostraron las correlaciones más intensas y robustas en S1, ratificadas como altamente estables mediante remuestreo bootstrap en S2:
-1. `edad_titulacion`: Correlación lineal positiva moderada-fuerte ($\rho = 0,466$, $IC_{95\%} [0,460; 0,472]$), validada con error estándar mínimo ($EE = 0,003$).
-2. `dur_total_carr`: Duración formal del plan curricular, con correlación teórica inversa respecto a la edad de ingreso y directa respecto al ciclo formativo.
-3. `area_conocimiento`: Efecto fijo por disciplina académica (particularmente Tecnología, Ciencias Básicas y Salud).
-4. `jornada`: Diferencial estructural diurno versus vespertino (brecha de atraso alto de 9,06 puntos porcentuales validada en S2).
-
-El modelo de imputación se especifica como:
-$$\widehat{\text{semestres\_reales}}_i = \beta_0 + \beta_1\,\text{edad\_titulacion}_i + \beta_2\,\text{dur\_total\_carr}_i + \sum_{k} \gamma_k\,\text{Area}_{ik} + \delta\,\text{Vespertino}_i + \varepsilon_i$$
-
-El ajuste se realiza exclusivamente sobre las $91.667$ observaciones con información completa. Los supuestos del modelo de regresión lineal (normalidad asintótica de residuos, homocedasticidad y factor de inflación de varianza $VIF < 5$) son evaluados previo a la imputación.
-
-| Variable Objetivo | Predictores Clave | $R^2$ | RMSE | Casos Imputados |
-|---|---|:---:|:---:|:---:|
-| `semestres_reales` | Edad titulación, Duración formal, Área, Jornada | *[Pendiente]* | *[Pendiente]* | 13.396 |
-
-### 1.3 Comparación de estrategias de imputación
-Se contrastan tres estrategias operacionales para el tratamiento de los datos no observados:
-- **Estrategia 1 (Eliminación / Complete-Case):** Exclusión listwise de las $13.396$ filas sin fecha de ingreso ($n = 91.667$).
-- **Estrategia 2 (Imputación Simple):** Asignación de la media o mediana condicionada a la duración formal ($n = 105.063$).
-- **Estrategia 3 (Regresión Lineal Múltiple):** Predicción preservando la covarianza multivariada ($n = 105.063$).
-
-| Estrategia | $n$ | Media | Desv. Est. | Asimetría | $\text{Corr}(\text{atraso, edad})$ |
-|---|:---:|:---:|:---:|:---:|:---:|
-| 1. Eliminación (Complete-case) | 91.667 | 3,40 | 4,51 | Positiva | 0,466 |
-| 2. Imputación simple (mediana) | 105.063 | *[Pendiente]* | *[Pendiente]* | *[Pendiente]* | *[Pendiente]* |
-| 3. Imputación regresión lineal | 105.063 | *[Pendiente]* | *[Pendiente]* | *[Pendiente]* | *[Pendiente]* |
-
-**Justificación de la base para modelamiento:** *[Pendiente confirmación numérica: justificar la elección del dataset en base a la no distorsión de la varianza y la preservación de la estructura de covarianza validada en S2].*
+*Justificación:* $E_2$ distorsiona gravemente la distribución, inflando el rezago alto en 8,2 puntos porcentuales e introduciendo correlación espuria negativa con la duración formal ($ho = -0,218$). En contraste, $E_3$ preserva de manera fiel los cuatro primeros momentos y la estructura de covariación observada.
 
 ---
 
-## 2. Clasificación mediante Regresión Logística (60 pts)
+## 2. Clasificación mediante Regresión Logística Supervisada (Parte 2)
 
-### 2.1 Preparación de datos informada por S1
-- **Variable objetivo:** Se define la variable dicotómica $Y = \text{atraso\_alto}$, donde $Y_i = 1$ si $\text{atraso\_semestres}_i > 4$, y $0$ en caso contrario, operacionalizando el atraso severo identificado en S1 y S2.
-- **Partición de datos:** Partición 70 % para entrenamiento y 30 % para prueba, estratificada por la variable objetivo con semilla fijada en `random_state = 42`.
-- **Tratamiento de outliers:** En S1 se identificaron $13.201$ observaciones atípicas según el criterio de Tukey ($1,5 \times IQR$). No obstante, el análisis de robustez de S2 demostró que dichos puntos reflejan rezagos extremos reales de trayectorias formativas complejas y que su exclusión altera la magnitud de las colas pero preserva intacto el signo y la dirección de las asociaciones. En consecuencia, se retienen en el análisis para no perder validez ecológica.
-- **Estandarización y codificación:** Variables continuas (`edad_titulacion`, `dur_total_carr`) se escalan a media 0 y varianza unitaria (StandardScaler). Las variables categóricas (`sexo`, `jornada`, `area_conocimiento`) se transforman mediante codificación One-Hot, omitiendo la categoría de referencia para prevenir multicolinealidad perfecta.
+### 2.1 Preparación de Datos y Tratamiento de Outliers
+* **Variable objetivo:** Binaria $Y_i = \mathbb{I}(	exttt{atraso\_semestres}_i > 4)$, reflejando el rezago crítico definido en S1.
+* **Partición de datos:** 70 % train ($n=73.544$) y 30 % test ($n=31.519$), estratificada por $Y$ con semilla 42.
+* **Retención de atípicos de S1:** Los 3.201 casos atípicos detectados por criterio Tukey en S1 se retienen en el análisis, ya que la evaluación de robustez de S2 demostró que reflejan rezagos extremos reales cuya omisión artificial sesga la variabilidad sin cambiar los signos.
+* **Estandarización y codificación:** One-Hot Encoding para variables categóricas (categorías de referencia: *Hombre*, *Administración y Comercio*, *A Distancia*) y estandarización para `edad_ingreso`.
 
-### 2.2 Selección de variables informada por S1 y S2
-Se evalúan tres especificaciones alternativas de la probabilidad $\pi_i = P(Y_i = 1 \mid \mathbf{x}_i)$:
-$$\text{Logit}(\pi_i) = \ln\left(\frac{\pi_i}{1 - \pi_i}\right) = \mathbf{x}_i^T \boldsymbol{\beta}$$
+### 2.2 Selección de Modelos Logísticos
+Se contrastaron tres especificaciones de la probabilidad $\pi_i = P(Y_i = 1 \mid \mathbf{x}_i)$:
 
-1. **Modelo 1 (Teórico S1/S2):** Especificación fundamentada sustantivamente. Incluye sexo, jornada, área de conocimiento y edad de titulación, reflejando el control por área sugerido en S2 para aislar el efecto de género y el impacto de la jornada vespertina.
-2. **Modelo 2 (Stepwise):** Selección iterativa paso a paso basada en el test de razón de verosimilitud ($p < 0,05$).
-3. **Modelo 3 (Criterios de Información):** Selección guiada por la minimización del AIC y BIC.
+| Modelo | Covariables | Parámetros | AIC | BIC | Pseudo $R^2$ |
+| :--- | :--- | :---: | :---: | :---: | :---: |
+| **$M_1$ (Teórico S1/S2)** | Sexo, Área, Jornada | 15 | 75.745,4 | 75.883,4 | 0,0627 |
+| **$M_2$ (S1/S2 + Edad)** | Sexo, Área, Jornada, Edad ingreso | 16 | **75.421,2** | **75.568,5** | **0,0667** |
+| **$M_3$ (Stepwise)** | Área, Sexo, Jornada, Edad ingreso | 16 | 75.421,2 | 75.568,5 | 0,0667 |
 
-| Modelo / Covariable | $\beta$ | EE | Valor $p$ | Odds Ratio ($e^\beta$) | IC 95 % (OR) | AIC / BIC |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Modelo 1 (Teórico S1/S2)** | | | | | | *[Pendiente]* |
-| Intercepto | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* | |
-| Sexo (Hombre) | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* | |
-| Jornada (Vespertina) | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* | |
-| Edad de titulación | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* | |
-| Áreas de conocimiento | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* | |
-| **Modelo 2 (Stepwise)** | \multicolumn{5}{c}{*[Resumen variables seleccionadas y significancia]*} | *[Pendiente]* |
-| **Modelo 3 (Criterios Inf.)** | \multicolumn{5}{c}{*[Resumen variables seleccionadas y significancia]*} | *[Pendiente]* |
+*Selección:* $M_2$ fue seleccionado unánimemente: minimiza AIC/BIC, coincide con la selección stepwise y posee plena coherencia teórica con los hallazgos de correlación de S1 y S2.
 
-### 2.3 Evaluación de estabilidad mediante bootstrap (30 pts)
-Para evaluar si los coeficientes estimados sufren de inestabilidad o sesgo asintótico debido a la sobredispersión o agrupamiento institucional detectado en S2, se aplica remuestreo bootstrap no paramétrico con $B \ge 1.000$ réplicas sobre el conjunto de entrenamiento:
-$$\boldsymbol{\beta}^{*(b)} \sim \text{Logit}(\mathbf{X}^{*(b)}, \mathbf{y}^{*(b)}), \quad b = 1, \dots, B$$
+### 2.3 Estabilidad Paramétrica mediante Bootstrap ($B = 1.000$)
 
-Se calculan los intervalos de confianza empíricos al 95 % (método percentil y BCa) para cada $\beta_j$ y cada Odds Ratio $e^{\beta_j}$, y se contrastan con los intervalos asintóticos tradicionales de Wald ($\widehat{\beta}_j \pm 1,96\,\text{EE}(\widehat{\beta}_j)$).
+| Variable / Nivel | $	ext{OR} = e^{\widehat{eta}}$ | IC 95 % Wald | IC 95 % Bootstrap | Ratio Ancho Boot/Wald | Estabilidad |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Edad de ingreso (año)** | 1,035 | [1,031; 1,039] | [1,016; 1,056] | 5,29 | Robusto |
+| **Mujer (vs Hombre)** | 0,749 | [0,721; 0,778] | [0,698; 0,800] | 1,78 | Robusto |
+| **Área: Agropecuaria** | 2,419 | [2,190; 2,671] | [1,304; 4,594] | 6,84 | Robusto |
+| **Área: Arte y Arquitectura** | 1,191 | [1,080; 1,313] | [0,786; 1,716] | 4,01 | Sensible |
+| **Área: Ciencias Básicas** | 2,026 | [1,803; 2,277] | [1,300; 2,995] | 3,58 | Robusto |
+| **Área: Ciencias Sociales** | 0,578 | [0,535; 0,623] | [0,401; 0,807] | 4,62 | Robusto |
+| **Área: Derecho** | 4,423 | [4,066; 4,811] | [2,854; 6,524] | 4,93 | Robusto |
+| **Área: Educación** | 0,700 | [0,647; 0,758] | [0,471; 1,001] | 4,77 | Límite |
+| **Área: Humanidades** | 1,160 | [0,962; 1,398] | [0,818; 1,698] | 2,01 | No signif. |
+| **Área: Salud** | 0,918 | [0,858; 0,982] | [0,636; 1,242] | 4,90 | Sensible |
+| **Área: Tecnología / Ing.** | 2,139 | [2,015; 2,271] | [1,446; 3,051] | 6,26 | Robusto |
+| **Jornada: Diurna** | 2,264 | [2,069; 2,478] | [1,038; 4,780] | 9,16 | Robusto |
+| **Jornada: Vespertina** | 1,881 | [1,730; 2,045] | [0,998; 3,385] | 7,57 | Límite |
+| **Jornada: Semipresencial** | 1,077 | [0,846; 1,372] | [0,565; 1,574] | 1,92 | No signif. |
 
-| Parámetro | $e^{\widehat{\beta}}$ | IC 95 % Wald | IC 95 % Bootstrap | Evaluación Estabilidad |
-|---|:---:|:---:|:---:|:---:|
-| Sexo (Hombre) | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Robusto / Inestable]* |
-| Jornada (Vespertina) | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Robusto / Inestable]* |
-| Edad titulación | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Robusto / Inestable]* |
-| Tecnología / Ingeniería | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Robusto / Inestable]* |
-| Salud | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Robusto / Inestable]* |
+*Conclusión de Estabilidad:* Las variables estructurales (Mujer, Edad, Derecho, Agropecuaria, Tecnología, Ciencias Básicas) mantienen significancia estricta en el 100 % de las réplicas bootstrap. Sin embargo, los intervalos se ensanchan entre 1,8x y 9,2x producto del agrupamiento de alumnos por universidad, demostrando la necesidad de cautela al interpretar la precisión de Wald.
 
-### 2.4 Diagnóstico de supuestos
-- **Multicolinealidad (VIF):** Se computa el Factor de Inflación de la Varianza sobre las variables independientes para verificar la ausencia de redundancia severa ($VIF < 5$).
-- **Linealidad en el logit (Box-Tidwell):** Se evalúa la linealidad de las covariables continuas (`edad_titulacion`) contrastando el término $X \ln(X)$.
-- **Observaciones influyentes:** Se calculan la Distancia de Cook y apalancamientos (*leverage*) para detectar casos que distorsionen los parámetros.
-- **Residuos Deviance y Pearson:** Examen de los residuos deviance para contrastar la bondad de ajuste del modelo.
-
-### 2.5 Evaluación de desempeño predictivo
-| Modelo / Partición | Accuracy | Precision | Recall | F1-Score | AUC-ROC | Brier Score |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Modelo 1 (Teórico) - Train** | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* |
-| **Modelo 1 (Teórico) - Test** | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* |
-| **Modelo 2 (Stepwise) - Test** | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* |
-| **Modelo 3 (AIC/BIC) - Test** | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Pend.]* |
-
-**Modelo final seleccionado:** *[Pendiente: Declaración formal y justificación del modelo ganador considerando parsimonia, interpretabilidad de negocio y AUC-ROC en Test].*
+### 2.4 Diagnóstico de Supuestos y Rendimiento en Test
+* $	ext{VIF} < 2,5$ (sin multicolinealidad).
+* Linealidad en logit validada por Box-Tidwell y distancias de Cook $< 0,02$.
+* **Métricas en Test ($n=31.519$):** $	ext{AUC} = 0,6755$, Exactitud $= 65,87\,\%$, Sensibilidad $= 59,50\,\%$, Especificidad $= 67,87\,\%$ (umbral de Youden $= 0,2246$). Brier Score $= 0,1658$.
 
 ---
 
-## 3. Análisis Comparativo del Impacto de la Imputación (9 pts)
+## 3. Impacto de la Imputación sobre el Modelo Final (Parte 3)
 
-Para responder a la pregunta analítica central sobre si la técnica de manejo de datos faltantes altera las decisiones institucionales, se re-ajusta la especificación final del modelo logístico de manera idéntica sobre los tres datasets preparados en la Parte 1.
+### 3.1 Diseño Experimental de la Prueba Común
+Para aislar el efecto de la técnica de imputación, se reajustó la especificación de $M_2$ sobre los tres conjuntos ($E_1, E_2, E_3$) y se evaluó sobre un **subconjunto común de 27.508 titulados con atraso estrictamente observado** (evitando juzgar a los modelos con etiquetas autogeneradas).
 
-| Métrica / Parámetro | 1. Eliminación | 2. Imp. Simple | 3. Imp. Regresión | Impacto Decisión |
-|---|:---:|:---:|:---:|:---:|
-| Tamaño muestral ($n$) | 91.667 | 105.063 | 105.063 | Pérdida de 12,75 % |
-| $\beta_{\text{sexo(hombre)}}$ | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Estable/Cambia]* |
-| IC 95 % $\beta_{\text{sexo}}$ | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Amplitud]* |
-| $\beta_{\text{jornada(vesp)}}$ | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Estable/Cambia]* |
-| $\beta_{\text{edad\_titulacion}}$ | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Estable/Cambia]* |
-| Accuracy (Test) | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Variación]* |
-| AUC-ROC (Test) | *[Pend.]* | *[Pend.]* | *[Pend.]* | *[Variación]* |
+### 3.2 Desempeño Comparativo
 
-**Conclusión de negocio:** *[Pendiente: Discutir si la imputación por regresión modifica sustantivamente los Odds Ratios o la jerarquía de factores de riesgo respecto al complete-case analysis].*
+| Estrategia | AUC | $\Delta	ext{AUC}$ vs $E_1$ [IC 95 %] | Exactitud | Prob. Media Predicha | Prevalencia Real |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **$E_1$ · Eliminación** | 0,6666 | — | 65,55 % | 24,57 % | 24,53 % |
+| **$E_2$ · Imputación simple** | 0,6442 | $-0,0224$ [$-0,0273; -0,0187$] | 65,40 % | **28,03 %** | 24,53 % |
+| **$E_3$ · Regresión lineal** | 0,6617 | $-0,0049$ [$-0,0066; -0,0032$] | 65,30 % | 24,16 % | 24,53 % |
+| **MI · Imputación múltiple** | **0,6640** | $-0,0026$ [$-0,0041; -0,0010$] | 65,50 % | 24,40 % | 24,53 % |
 
----
-
-## 4. Discusión y Recomendaciones para la Toma de Decisiones
-
-### 4.1 Integración de la cadena metodológica $S_1 \to S_2 \to S_3$
-La fortaleza central de este estudio radica en su estricta coherencia acumulativa:
-- En **S1**, la inspección de datos evitó el descarte apresurado de atípicos y aisló la no-respuesta administrativa (12,75 %), alertando sobre la asimetría del atraso.
-- En **S2**, la inferencia clásica fue contrastada con métodos de remuestreo, evidenciando que las correlaciones entre atraso, duración formal y edad eran auténticamente lineales y estables, pero advirtiendo que los titulados no son independientes entre universidades (efecto agrupamiento institucional vía Jackknife).
-- En **S3**, estos hallazgos guiaron una imputación multivariada no ingenua y permitieron contrastar la inferencia asintótica con bootstrap en la regresión logística, garantizando que los coeficientes y Odds Ratios utilizados para políticas institucionales no sean artefactos de supuestos no verificados.
-
-### 4.2 Recomendaciones para la gestión institucional
-1. **Sistemas de Alerta Temprana Diferenciados por Área:** Dado que el efecto del género está fuertemente mediado por el área de conocimiento (demostrado en S2 y modelado en S3), los planes de retención y apoyo académico deben focalizarse en facultades de Ingeniería y Tecnología, con especial monitoreo en programas vespertinos.
-2. **Ajuste de Políticas de Financiamiento y Gratuidad:** La alta concentración de estudiantes que superan los 4 semestres de rezago sugiere que los plazos de financiamiento deben considerar mecanismos de flexibilización curricular para evitar el sobreendeudamiento y la deserción de último año.
+### 3.3 Hallazgos Analíticos y Corrección mediante Imputación Múltiple (MI)
+1. **Sexo y Áreas son inmunes a la imputación:** El efecto de género ($	ext{OR} pprox 0,75 - 0,76$), Derecho ($	ext{OR} pprox 4,3$) y Tecnología ($	ext{OR} pprox 2,1$) es idéntico entre estrategias.
+2. **Imputación simple descalabrada:** $E_2$ invierte 3 jornadas y sobrestima el riesgo en 3,5 puntos globales (y hasta en 55 puntos en la modalidad a distancia).
+3. **Imputación no congeniada en $E_3$:** La regresión de duración inicial omitió *jornada*, asignando una tasa plana de atraso alto ($pprox 20\,\%$) a todas las modalidades. Como A Distancia tenía 75,9 % de incompletos, su tasa cayó artificialmente, disparando el OR de la Diurna a 2,26 y cruzando a Semipresencial por sobre el 1 ($	ext{OR}=1,08$).
+4. **Solución MI ($m=20$, congeniada):** Al incluir jornada, sexo y edad en la imputación, los ORs se re-alinean: Diurna baja a 1,60 ($[1,42; 1,80]$) y Semipresencial vuelve a 0,62 ($[0,46; 0,83]$), reduciendo la discrepancia con $E_1$ de 18,5 % a 7,3 %.
 
 ---
 
-## 5. Presentación del Proyecto y Repositorio (9 pts)
+## 4. Discusión, Conclusiones y Recomendaciones Directivas (Parte 4)
 
-### 5.1 Estructura y distribución del video grupal (10 minutos)
-La exposición audiovisual se organiza en cuatro bloques equitativos de 2,5 minutos:
-1. **Bloque 1 – Fernanda Ovalle:** Contexto del pregrado universitario chileno, planteamiento del problema de sobre-duración y hallazgos clave de calidad de datos en S1.
-2. **Bloque 2 – Jorge Álvarez:** Metodología computacional de validación en S2 (Bootstrap BCa, simulación Monte Carlo de cohortes y análisis Jackknife de dependencia institucional).
-3. **Bloque 3 – César Lorca:** Manejo inteligente de datos faltantes, comparación de estrategias de imputación y ajuste de especificaciones de regresión logística en S3.
-4. **Bloque 4 – Sebastián Cajales:** Diagnóstico de estabilidad bootstrap del modelo final, evaluación comparativa del impacto de la imputación y recomendaciones estratégicas de negocio.
+### 4.1 Progresión Metodológica Acumulativa ($S_1 	o S_2 	o S_3$)
+* **S1:** Detección de atípicos Tukey sin descarte apresurado; hallazgo de la pérdida administrativa del 12,75 %.
+* **S2:** Demostración con Bootstrap BCa de que el área curricular media la brecha de género (de $+1,07$ a $+0,55$ semestres) y cuantificación de la dependencia jerárquica universitaria (Jackknife).
+* **S3:** Imputación informada por covariación de S2, clasificación logística supervisada, auditoría del sesgo de no-congenialidad e inferencia robusta bootstrap.
 
-### 5.2 Trazabilidad y reproducibilidad en GitHub
-El repositorio oficial del proyecto ([jaossandon/sumativa1-f2-mcdi501](https://github.com/jaossandon/sumativa1-f2-mcdi501)) conserva la trazabilidad completa y reproducible de todas las etapas del magíster:
-- `S1/`: Notebook de análisis exploratorio e inferencial y reporte técnico S1.
-- `S2/`: Notebook ejecutado, informe PDF y archivo de resultados validados (`resultados_validados.csv` y `.md`).
-- `S3/`: Notebook maestro de modelamiento integrado (`Sumativa3_F4_Titulados.ipynb`) e informe final PDF en plantilla institucional.
+### 4.2 Recomendaciones de Gestión
+1. **Sistemas de Alerta Temprana Diferenciados por Área:** Focalizar recursos de tutorías y acompañamiento en Derecho ($	ext{OR}=4,35$), Tecnología e Ingeniería ($	ext{OR}=2,07$) y Ciencias Básicas ($	ext{OR}=2,03$).
+2. **Revisión de Plazos de Gratuidad y Financiamiento:** Reconocer que el 24,5 % de atraso severo obedece a factores estructurales del currículo, requiriendo mecanismos de extensión proporcional para evitar el sobreendeudamiento terminal.
+3. **Estándares Metodológicos en Analítica de Datos:** Descartar de plano la imputación por la media/mediana en modelos institucionales; exigir imputación múltiple congeniada y ajuste por conglomerados.
 
 ---
 
-## 6. Bibliografía (APA 7.ª edición)
+## 5. Distribución de la Presentación y Repositorio (Parte 5)
 
-- Centro de Estudios Mineduc. (2025). *Base de datos oficial de Titulados en Educación Superior 2025*. Servicio de Información de Educación Superior (SIES). Ministerio de Educación de Chile. https://datosabiertos.mineduc.cl
-- Davison, A. C., & Hinkley, D. V. (1997). *Bootstrap methods and their application*. Cambridge University Press.
-- Efron, B., & Tibshirani, R. J. (1994). *An introduction to the bootstrap*. CRC press.
-- Fox, J., & Weisberg, S. (2019). *An R companion to applied regression* (3.ª ed.). SAGE Publications.
-- Hosmer, D. W., Lemeshow, S., & Sturdivant, R. X. (2013). *Applied logistic regression* (3.ª ed.). John Wiley & Sons.
-- Little, R. J., & Rubin, D. B. (2019). *Statistical analysis with missing data* (3.ª ed.). John Wiley & Sons.
-- Pedregosa, F., Varoquaux, G., Gramfort, A., Michel, V., Thirion, B., Grisel, O., Blondel, M., Prettenhofer, P., Weiss, R., Dubourg, V., Vanderplas, J., Passos, A., Cournapeau, D., Brucher, M., Perrot, M., & Duchesnay, É. (2011). Scikit-learn: Machine learning in Python. *Journal of Machine Learning Research*, 12, 2825–2830.
-- van Buuren, S. (2018). *Flexible imputation of missing data* (2.ª ed.). CRC press.
+### 5.1 Estructura del Video Grupal (10 minutos)
+* **Bloque 1 (00:00 - 02:30) · Fernanda Ovalle:** Contexto universitario chileno, calidad de datos S1 y diagnóstico MAR.
+* **Bloque 2 (02:30 - 05:00) · Jorge Álvarez:** Inferencia no paramétrica en S2 (Bootstrap BCa, Monte Carlo y Jackknife).
+* **Bloque 3 (05:00 - 07:30) · César Lorca:** Construcción y selección del modelo logístico $M_2$ en S3 y curvas ROC.
+* **Bloque 4 (07:30 - 10:00) · Sebastián Cajales:** Estabilidad bootstrap por clúster, descubrimiento de no-congenialidad y síntesis directiva $S_1 	o S_2 	o S_3$.
+
+### 5.2 Trazabilidad en GitHub
+Código y datos disponibles de manera reproducible en:  
+[https://github.com/jaossandon/sumativa1-f2-mcdi501](https://github.com/jaossandon/sumativa1-f2-mcdi501)

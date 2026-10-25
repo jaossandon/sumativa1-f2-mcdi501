@@ -1,91 +1,77 @@
-# Guion de Exposición: Bloque 4 (Sebastián Cajales)
+# Guion de Exposición Oficial: Bloque 4 (Sebastián Cajales)
 **Evaluación Sumativa 3: Modelamiento Predictivo Integrado**  
-*MCDI501: Estadística Computacional para la Toma de Decisiones — UNAB*  
-**Duración asignada:** 2 minutos y 30 segundos (Minuto 7:30 al 10:00 del video grupal)
+*MCDI501: Estadística Computacional para la Toma de Decisiones — Magíster en Ciencia de Datos e IA, UNAB*  
+**Duración asignada:** 2 minutos y 30 segundos (Minuto 07:30 al 10:00 del video grupal)
 
 ---
 
-## 1. Resumen y Objetivos del Bloque 4
+## 1. Estructura y Metas del Bloque 4
 
-Como cierre del proyecto, este bloque tiene la responsabilidad de:
-1. **Demostrar la robustez computacional del modelo logístico final** mediante Bootstrap ($B \ge 1.000$), contrastando con los intervalos tradicionales asintóticos (Wald).
-2. **Presentar el diagnóstico de supuestos:** Multicolinealidad (VIF), linealidad en el logit (Box-Tidwell) y observaciones influyentes.
-3. **Responder la pregunta analítica central de la Sumativa 3:** ¿Cambia la decisión del negocio según la estrategia de imputación utilizada?
-4. **Cerrar con la progresión metodológica ($S_1 \to S_2 \to S_3$) y recomendaciones estratégicas** para la gestión universitaria y políticas públicas de educación superior.
+Como expositor de cierre del proyecto, este bloque tiene cuatro responsabilidades clave evaluadas en la rúbrica:
+1. **Demostrar la robustez computacional del modelo logístico final** mediante Bootstrap por conglomerados ($B = 1.000$), contrastando con los intervalos tradicionales asintóticos de Wald.
+2. **Explicar el impacto analítico de la imputación en la toma de decisiones**, revelando el hallazgo de la imputación no congeniada y cómo la Imputación Múltiple ($m=20$) resuelve la distorsión de la jornada.
+3. **Resumir la progresión metodológica acumulativa ($S_1 	o S_2 	o S_3$)**, demostrando que ninguna decisión fue aislada.
+4. **Formular recomendaciones estratégicas de negocio** para la gestión directiva universitaria y políticas públicas de educación superior.
 
 ---
 
-## 2. Diapositivas sugeridas (Qué proyectar en pantalla)
+## 2. Diapositivas Asociadas (Presentacion_Bloque4_Sebastian.pptx)
 
-### Diapositiva 1: Estabilidad Bootstrap y Diagnóstico de Supuestos
-- **Gráficos:** Distribución empírica bootstrap de los coeficientes / Odds Ratios y curva ROC del modelo final en Test.
-- **Puntos clave en pantalla:**
-  - $B = 1.000$ réplicas bootstrap no paramétricas.
-  - Intervalos percentil y BCa al 95 % vs. intervalos clásicos de Wald.
-  - Supuestos verificados: VIF $< 5$ (sin multicolinealidad severa), linealidad logit validada y control de observaciones influyentes (Cook).
-
-### Diapositiva 2: Impacto Analítico de la Imputación en la Toma de Decisiones
-- **Tabla resumen:** Comparativa de los 3 datasets (Eliminación listwise $n=91.667$, Imputación simple $n=105.063$, Imputación por regresión $n=105.063$).
-- **Métricas:** Variación de coeficientes $\beta$, amplitud de intervalos de confianza, Accuracy y AUC en Test.
-- **Veredicto:** ¿Se alteran los factores de riesgo o las conclusiones del negocio?
-
-### Diapositiva 3: Conclusiones Integradas ($S_1 \to S_2 \to S_3$) y Recomendaciones
-- **Línea de progresión del proyecto:**
-  - $S_1$: Diagnóstico exploratorio y alerta de faltantes del 12,75 %.
-  - $S_2$: Validación con remuestreo (Bootstrap, Monte Carlo, Jackknife por universidad).
-  - $S_3$: Imputación informada, clasificación predictiva y estabilidad de inferencia.
-- **Recomendaciones clave:**
-  - Sistema de alerta temprana diferenciado por área curricular y jornada vespertina.
-  - Flexibilización de plazos en políticas de gratuidad y financiamiento institucional.
+* **Slide 1:** Portada Institucional con Logo UNAB a color, Grupo 6 y título de la presentación.
+* **Slide 2:** Estabilidad Bootstrap ($B=1.000$) y Dependencia Institucional (Wald vs. Bootstrap).
+* **Slide 3:** Análisis Comparativo de Imputación ($E_1, E_2, E_3, 	ext{MI}$) y Hallazgo de No-Congenialidad.
+* **Slide 4:** Progresión Metodológica Acumulativa ($S_1 	o S_2 	o S_3$) y Recomendaciones Directivas.
+* **Slide 5:** Repositorio Oficial en GitHub y Cierre de la Presentación.
 
 ---
 
 ## 3. Guion Palabra por Palabra (Speech con marcas de tiempo)
 
-> *Ritmo recomendado: Pausado, seguro y técnico. Total aproximado: ~330 palabras (2 minutos y 15 segundos de habla efectiva, dejando margen de 15 segundos para transición).*
+> *Ritmo recomendado: Pausado, seguro, profesional y con énfasis en los números auditados. Total: ~360 palabras (tiempo estimado: 2 minutos y 20 segundos, con 10 segundos de holgura).*
 
 ---
 
-### [00:00 - 00:45] Estabilidad Bootstrap y Diagnóstico de Supuestos
+### [07:30 - 08:15] Estabilidad Paramétrica Bootstrap y Agrupamiento Institucional
 
 > *"Muchas gracias, César.*  
-> *Para garantizar que nuestro modelo logístico final no dependa exclusivamente de supuestos asintóticos teóricos que suelen fallar en muestras con agrupamiento o asimetría —como detectamos en la Sumativa 2 mediante Jackknife—, aplicamos un remuestreo **bootstrap no paramétrico con 1.000 réplicas** sobre el conjunto de entrenamiento.*
+> *Para garantizar que las decisiones de gestión no descansen ciegamente en supuestos asintóticos teóricos —que suelen fallar en presencia de asimetría o dependencia jerárquica—, sometimos el modelo logístico final a un remuestreo **bootstrap por conglomerados institucionales con 1.000 réplicas**.*
 > 
-> *Al contrastar los intervalos asintóticos tradicionales de Wald con los intervalos bootstrap percentil y BCa al 95 %, confirmamos una **alta estabilidad paramétrica**: los coeficientes de las variables de mayor impacto —como la jornada vespertina, la edad de titulación y las áreas tecnológicas— mantienen intervalos estrechos y sin cruzar el valor nulo de Odds Ratio igual a 1.*
+> *Al contrastar los intervalos asintóticos clásicos de Wald con los empíricos de Bootstrap al 95 %, confirmamos la **alta estabilidad direccional de las variables críticas**: ser mujer tiene un efecto protector significativo con un Odds Ratio de 0,75, mientras que cursar Derecho multiplica las chances de atraso alto por 4,4, y Tecnología por 2,1.*
 > 
-> *Asimismo, el diagnóstico de supuestos ratificó la validez del modelo: los Factores de Inflación de Varianza se ubicaron bajo el umbral de 5 descartando multicolinealidad, la linealidad en el logit fue consistente según Box-Tidwell y no se identificaron puntos de apalancamiento que distorsionaran sustantivamente las probabilidades estimadas."*
+> *Sin embargo, el hallazgo metodológico clave es que los intervalos bootstrap resultan entre **3,5 y 9,2 veces más anchos** que los de Wald. Esto valida de forma contundente lo que descubrimos en la Sumativa 2 con Jackknife: los estudiantes comparten dinámicas al interior de cada universidad, por lo que ignorar la estructura clúster subestima severamente la verdadera incertidumbre."*
 
 ---
 
-### [00:45 - 01:30] Análisis Comparativo del Impacto de la Imputación
+### [08:15 - 09:05] Impacto de la Imputación y el Hallazgo de No-Congenialidad
 
-> *"Uno de los focos evaluativos más relevantes de esta Sumativa 3 fue evaluar si la estrategia para tratar el 12,75 % de datos no observados altera o no las decisiones institucionales.*  
-> *Para responder a esto, re-ajustamos la especificación del modelo final sobre los tres escenarios:*
-> 1. *Eliminación de casos completos (perdiendo más de 13.000 observaciones).*
-> 2. *Imputación simple por mediana.*
-> 3. *Nuestra imputación por regresión lineal múltiple.*
+> *"La pregunta central de esta fase era: ¿cambia la decisión del negocio según cómo tratamos el 12,75 % de datos no observados? Evaluamos los modelos sobre una **prueba común de 27.508 titulados con atraso observado**.*
 > 
-> *Los resultados son categóricos: aunque la eliminación de casos completos preserva la dirección general de los efectos, **la imputación por regresión maximiza la potencia estadística sin inflar artificialmente la precisión**, logrando un desempeño predictivo sólido en el conjunto de prueba `[mencionar AUC final de 0.XX y Accuracy de XX %]`, demostrando que los factores de riesgo identificados son estructurales y no un artefacto de la falta de datos."*
+> *Los resultados son categóricos:  
+> Primero, **la imputación simple por mediana es inadmisible**: invierte el signo de tres de las cuatro jornadas y sobrestima la prevalencia de atraso alto en más de 3 puntos porcentuales.*  
+> 
+> *Segundo, al analizar nuestra imputación por regresión, identificamos un fenómeno crucial de la literatura estadística: una **imputación no congeniada**. Al haber omitido la jornada en el modelo lineal de duración, se asignó una tasa plana de atraso a todas las modalidades, distorsionando los Odds Ratios de la jornada diurna y semipresencial.*  
+> 
+> *Para resolverlo, implementamos una **Imputación Múltiple Congeniada con 20 réplicas y reglas de Rubin**, incorporando jornada, sexo y edad. Con esto, redujimos la distorsión media con casos completos al 7,3 %, recuperamos la calibración en todas las modalidades y alcanzamos un **AUC de 0,662 y una exactitud del 65,3 %**."*
 
 ---
 
-### [01:30 - 02:30] Conclusiones Integradas ($S_1 \to S_2 \to S_3$) y Recomendaciones
+### [09:05 - 10:00] Síntesis Acumulativa ($S_1 	o S_2 	o S_3$) y Recomendaciones Directivas
 
-> *"Para concluir la exposición grupal, queremos destacar la progresión metodológica integral de este proyecto:*
-> - *En **S1**, el análisis exploratorio evitó descartar erróneamente los valores atípicos y caracterizó la asimetría del rezago.*
-> - *En **S2**, los métodos computacionales de remuestreo demostraron que la brecha de género se explicaba por el área de estudio y que existía una fuerte dependencia institucional.*
-> - *Y en esta **S3**, integramos ambos antecedentes para imputar con fundamento teórico y construir un clasificador logístico robusto y validado computacionalmente.*
+> *"Para cerrar la defensa del Grupo 6, queremos relevar la coherencia de nuestra cadena analítica:*  
+> *En **S1**, el análisis exploratorio evitó descartar erróneamente los valores atípicos y detectó la pérdida administrativa.*  
+> *En **S2**, los métodos computacionales de remuestreo demostraron que la brecha de género estaba mediada por la carrera y evidenciaron la dependencia institucional.*  
+> *Y en esta **S3**, integramos ambos antecedentes para seleccionar covariables con fundamento, auditar la imputación y construir un clasificador reproducible y robusto.*
 > 
-> *En términos de negocio y política educativa, nuestras dos recomendaciones clave son:*
-> *Primero, diseñar **Sistemas de Alerta Temprana focalizados**, donde las tutorías y el seguimiento académico se concentren de manera prioritaria en facultades de Ingeniería y Tecnología, con especial flexibilidad para los estudiantes de jornada vespertina.*
-> *Y segundo, **revisar los plazos rígidos de financiamiento y gratuidad**, considerando que el atraso superior a 4 semestres no es una anomalía individual aislada, sino un fenómeno estructural del sistema formativo universitario chileno.*
+> *Desde la perspectiva de toma de decisiones y política pública, formulamos dos recomendaciones directivas:*  
+> *Primera: implementar **Sistemas de Alerta Temprana focalizados** en facultades de Derecho, Ingeniería y Ciencias Básicas, donde los cuellos de botella de titulación son estructurales y no meramente sociodemográficos.*  
+> *Segunda: **flexibilizar los plazos de financiamiento y gratuidad**, dado que el rezago superior a 4 semestres afecta a casi un cuarto del estudiantado universitario chileno.*  
 > 
-> *Muchas gracias por su atención y quedamos atentos a sus preguntas."*
+> *Todo el código, notebooks y reportes técnicos se encuentran completamente disponibles en nuestro repositorio oficial de GitHub. Muchas gracias."*
 
 ---
 
-## 4. Tips Clave para el Momento de Grabar
+## 4. Recomendaciones Finales para el Momento de Grabar
 
-1. **Entonación en los números:** Cuando menciones "1.000 réplicas bootstrap" o "12,75 % de faltantes", dilo con claridad y énfasis, ya que son los requisitos explícitos de la pauta.
-2. **Conexión con el compañero previo:** Empezar con *"Gracias, César"* le demuestra al profesor que el grupo está coordinado y no son 4 presentaciones pegadas al azar.
-3. **Mención explícita a $S_1 \to S_2 \to S_3$:** Es el criterio que más puntos entrega en el ítem de comunicación según la rúbrica.
+1. **Entonación pausada en los números:** Enfatiza claramente *"1.000 réplicas bootstrap"*, *"Odds Ratio de 0,75"* y *"27.508 titulados en prueba común"*. Son los indicadores que el profesor buscará en la rúbrica de evaluación.
+2. **Fluidez en la transición:** Al arrancar con *"Muchas gracias, César"*, demuestras que el video es una pieza orgánica de equipo y no cuatro fragmentos aislados.
+3. **Mención explícita a $S_1 	o S_2 	o S_3$:** Es el estándar obligatorio de la Fase 4 para alcanzar el puntaje máximo en comunicación.
