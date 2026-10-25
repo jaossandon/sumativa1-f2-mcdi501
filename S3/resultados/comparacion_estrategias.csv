@@ -1,0 +1,4 @@
+Estrategia,n,n con atraso,media,desv.,asimetría,% atraso alto,ρ atraso_semes–edad_titu,ρ semestres_re–edad_titu,ρ dur_total_ca–atraso_se
+Eliminación,91667,91667,3.398,4.76,4.41,24.5,0.466,0.461,0.009
+Imputación simple,105063,105063,3.787,4.611,4.054,32.7,0.541,0.383,-0.218
+Imputación por regresión,105063,105063,3.4,4.534,4.55,23.8,0.468,0.175,-0.069

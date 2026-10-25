@@ -221,3 +221,7 @@ __marimo__/
 # Datos: el crudo pesa mas de 100 MB y se descarga desde Mineduc
 data/raw/
 *.csv
+
+# Sumativa 3: los conjuntos derivados se regeneran con el notebook
+S3/resultados/*.parquet
+!S3/resultados/*.csv
