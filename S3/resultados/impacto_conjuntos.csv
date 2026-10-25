@@ -1,0 +1,7 @@
+Conjunto,n,% atraso alto
+Entrenamiento E1 · Eliminación,64159,24.54
+Entrenamiento E2 · Imputación simple,73544,32.66
+Entrenamiento E3 · Imputación por regresión,73544,23.84
+Prueba común (observados),27508,24.53
+Prueba imputados según E2,4011,89.58
+Prueba imputados según E3,4011,19.07
