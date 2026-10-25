@@ -1,0 +1,4 @@
+Modelo,Variables,Parámetros,AIC,BIC,Pseudo R²
+M1 · S1/S2,"sexo, area_conocimiento, jornada",15,75745.4,75883.4,0.0627
+M2 · S1/S2 + edad,"sexo, area_conocimiento, jornada, edad_ingreso",16,75421.2,75568.5,0.0667
+M3 · stepwise,"area_conocimiento, sexo, jornada, edad_ingreso",16,75421.2,75568.5,0.0667

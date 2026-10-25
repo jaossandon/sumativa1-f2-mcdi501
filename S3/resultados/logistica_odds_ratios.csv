@@ -1,0 +1,16 @@
+Variable,OR,IC95 bootstrap inf,IC95 bootstrap sup,IC95 Wald inf,IC95 Wald sup,Ancho bootstrap / Wald
+edad_ingreso,1.0349,1.016,1.0564,1.0311,1.0388,5.2912
+sexo_Mujer,0.7487,0.6985,0.7999,0.7207,0.7778,1.776
+area_conocimiento_Agropecuaria,2.4189,1.3037,4.5944,2.1904,2.6712,6.8438
+area_conocimiento_Arte y Arquitectura,1.1909,0.7858,1.716,1.0805,1.3127,4.0063
+area_conocimiento_Ciencias Básicas,2.026,1.3,2.9949,1.8028,2.2768,3.5757
+area_conocimiento_Ciencias Sociales,0.5779,0.4005,0.8067,0.5355,0.6235,4.6169
+area_conocimiento_Derecho,4.4228,2.8541,6.5239,4.0659,4.811,4.9251
+area_conocimiento_Educación,0.7002,0.4707,1.001,0.6468,0.7581,4.7653
+area_conocimiento_Humanidades,1.1598,0.8183,1.6976,0.962,1.3984,2.0146
+area_conocimiento_Salud,0.9178,0.6364,1.2424,0.8581,0.9817,4.9009
+area_conocimiento_Tecnología,2.1392,1.4455,3.051,2.0148,2.2713,6.2607
+jornada_Diurna,2.2642,1.0376,4.7799,2.069,2.4777,9.1566
+jornada_Otra,1.8252,0.9502,3.9427,1.4026,2.375,3.0776
+jornada_Semipresencial,1.0771,0.565,1.5741,0.8457,1.3717,1.9183
+jornada_Vespertina,1.8809,0.9978,3.3849,1.7299,2.0452,7.5701

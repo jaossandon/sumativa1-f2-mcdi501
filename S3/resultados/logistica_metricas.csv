@@ -1,0 +1,7 @@
+Métrica,valor
+AUC prueba,0.6755
+AUC entrenamiento,0.6782
+Umbral Youden,0.2246
+Sensibilidad,0.595
+Especificidad,0.6787
+Exactitud,0.6587
