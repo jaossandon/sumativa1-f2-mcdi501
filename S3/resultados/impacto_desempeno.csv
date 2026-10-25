@@ -1,0 +1,4 @@
+Conjunto,AUC,Umbral,Sensibilidad,Especificidad,Exactitud,Prob. media predicha,% real,Δ AUC vs E1,IC95 Δ inf,IC95 Δ sup
+E1 · Eliminación,0.6666,0.2294,0.5768,0.6811,0.6555,0.2457,0.2453,0.0,,
+E2 · Imputación simple,0.6442,0.3011,0.5599,0.6845,0.654,0.2803,0.2453,-0.0224,-0.0273,-0.0187
+E3 · Imputación por regresión,0.6617,0.2246,0.5768,0.6778,0.653,0.2416,0.2453,-0.0049,-0.0066,-0.0032

@@ -1,0 +1,18 @@
+,E1,E1,E1,E2,E2,E2,E3,E3,E3,E2,E2,E2,E3,E3,E3
+,OR,IC inf,IC sup,OR,IC inf,IC sup,OR,IC inf,IC sup,Cambio % vs E1,Cambia de lado del 1,Cambia significancia,Cambio % vs E1,Cambia de lado del 1,Cambia significancia
+Variable,,,,,,,,,,,,,,,
+edad_ingreso,1.0134,1.0088,1.0179,1.0155,1.0119,1.0191,1.0349,1.0311,1.0387,0.2117,False,False,2.1263,False,False
+sexo_Mujer,0.7641,0.7342,0.7954,0.8302,0.8001,0.8615,0.7487,0.7207,0.7778,8.6466,False,False,-2.0207,False,False
+area_conocimiento_Agropecuaria,2.3369,2.1083,2.5903,2.3506,2.1292,2.5951,2.4208,2.1921,2.6734,0.5867,False,False,3.5914,False,False
+area_conocimiento_Arte y Arquitectura,1.1619,1.0518,1.2837,1.1952,1.0853,1.3163,1.1908,1.0803,1.3126,2.865,False,False,2.4824,False,False
+area_conocimiento_Ciencias Básicas,1.9677,1.746,2.2175,2.112,1.88,2.3726,2.0278,1.8044,2.2788,7.3335,False,False,3.0527,False,False
+area_conocimiento_Ciencias Sociales,0.5572,0.5133,0.6049,0.6456,0.6029,0.6914,0.5787,0.5364,0.6245,15.861,False,False,3.8586,False,False
+area_conocimiento_Derecho,4.2128,3.8606,4.5972,3.7244,3.4247,4.0504,4.4259,4.0687,4.8144,-11.5931,False,False,5.0574,False,False
+area_conocimiento_Educación,0.8327,0.7641,0.9075,1.5786,1.4751,1.6894,0.7004,0.647,0.7583,89.575,True,False,-15.8852,False,False
+area_conocimiento_Humanidades,1.15,0.9516,1.3897,1.0641,0.8792,1.2879,1.1702,0.9704,1.4111,-7.463,False,False,1.7594,False,False
+area_conocimiento_Salud,0.8792,0.8196,0.9432,0.9025,0.8451,0.9638,0.9187,0.8589,0.9826,2.646,False,False,4.4841,False,False
+area_conocimiento_Tecnología,1.9706,1.8459,2.1036,2.0199,1.9044,2.1423,2.1403,2.0159,2.2725,2.5016,False,False,8.6159,False,False
+jornada_Diurna,1.3752,1.1894,1.5901,0.0889,0.0817,0.0967,2.2625,2.0675,2.4759,-93.5359,True,False,64.5192,False,False
+jornada_Otra,1.3344,0.9169,1.9421,0.321,0.2592,0.3977,1.8244,1.4021,2.374,-75.9416,True,True,36.7204,False,True
+jornada_Semipresencial,0.513,0.3404,0.773,0.4946,0.4113,0.5948,1.0767,0.8454,1.3712,-3.5812,False,False,109.8927,True,True
+jornada_Vespertina,1.6576,1.4388,1.9096,0.2714,0.251,0.2936,1.8824,1.7312,2.0467,-83.6259,True,False,13.5588,False,False
