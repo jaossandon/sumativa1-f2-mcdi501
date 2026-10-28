@@ -13,9 +13,16 @@
 ## Pregunta
 ¿Cuánto se aparta la duración real de las carreras de su duración formal, y difiere ese atraso según sexo y jornada?
 
-## Datos
-Base de Titulados de Educación Superior 2025 (Mineduc, SIES), filtrada a **pregrado universitario** (105.063 registros).
-El archivo crudo no se incluye por su tamaño: descargarlo desde https://datosabiertos.mineduc.cl y guardarlo en `data/raw/`.
+## Datos y Descarga Pública (Reproducibilidad)
+La investigación se fundamenta en la **Base Oficial de Titulados en Educación Superior 2025**, elaborada por el Servicio de Información de Educación Superior (SIES) del Ministerio de Educación de Chile (Mineduc).
+
+* **Portal oficial de descarga pública:** [Datos Abiertos Mineduc](https://datosabiertos.mineduc.cl)
+* **Conjunto de datos:** *Educación Superior - Titulados en Educación Superior 2025*
+* **Nombre exacto del archivo descargado:** `20260817_Titulados_Ed_Superior_2025_WEB.csv` (formato CSV delimitado por punto y coma, codificación `latin-1` / `utf-8`).
+* **Instrucciones de instalación:**
+  1. Descargar el archivo desde el portal oficial [datosabiertos.mineduc.cl](https://datosabiertos.mineduc.cl).
+  2. Guardar el archivo directamente en la ruta: `data/raw/20260817_Titulados_Ed_Superior_2025_WEB.csv`
+  3. Los scripts y cuadernos aplican automáticamente el filtro metodológico oficial a **Pregrado Universitario** (`nivel_global == 'Pregrado'` y `tipo_inst_1 == 'Universidades'`), obteniendo el universo de **105.063 registros** analizados en las Evaluaciones S1, S2, Formativa 2 y S3.
 
 ## Estructura
 ```
